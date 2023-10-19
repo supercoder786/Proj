@@ -4,6 +4,10 @@
         <members>ChatController</members>
         <name>ApexClass</name>
     </types>
+    <types>
+        <members>BlogController</members>
+        <name>ApexClass</name>
+    </types>
    
     <version>58.0</version>
 </Package>
