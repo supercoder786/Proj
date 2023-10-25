@@ -1,12 +1,5 @@
 public with sharing class ChatController {
-   
-    
-    
-   @AuraEnabled(cacheable=true)
-    public static List<Person__c> getUsers() {
-        return [SELECT Id, Name, Username__c FROM Person__c];
-    }
-    
+
     @AuraEnabled(cacheable=true)
     public static List<Chat__c> getChatMessages(String otheruserName, String myuserName) {
         List<Chat__c> messages = new List<Chat__c>();
@@ -17,27 +10,33 @@ public with sharing class ChatController {
     }
     
     @AuraEnabled
-    public static Boolean saveChatMessage(String message, String senderId, String receiverId) {
+    public static Boolean saveChatMessage(String message, String senderName, String receiverName) {
         
         try {  
             // Person__c sender = [Select Id ,Name from Person__c Where Id=: senderId ] ;
             // Person__c receiver = [Select Id ,Name from Person__c Where Id=: receiverId ] ;
             Chat__c chatMessage = new Chat__c();
             chatMessage.Message__c = message;
-            chatMessage.Sender__c = senderId;
-            chatMessage.Receiver__c = receiverId;
-            chatMessage.Name = 'Chat between ' + senderId + ' and ' + receiverId; // Modify as per your naming convention
+            chatMessage.Sender__c = senderName;
+            chatMessage.Receiver__c = receiverName;
+            chatMessage.Name = 'Chat between ' + senderName + ' and ' + receiverName; // Modify as per your naming convention
     
             insert chatMessage;
-             Chat_Message__e event = new Chat_Message__e(
-                Sender__c = senderId,
-                Receiver__c = receiverId,
-                Message__c = message
-            );
-            EventBus.publish(event);
             return true;
         } catch (Exception e) {
             throw new AuraHandledException('Error saving chat message: ' + e.getMessage());
         }
     }
+    
+    // public class ChatUser {
+    //     @AuraEnabled public Id id;
+    //     @AuraEnabled public String username;
+    //     @AuraEnabled public String profilePic;
+    // }
+    
+    // public class ChatMessage {
+    //     @AuraEnabled public Id id;
+    //     @AuraEnabled public String text;
+    //     @AuraEnabled public Boolean isCurrentUser;
+    // }
 }
